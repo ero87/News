@@ -3,6 +3,7 @@ package erik.com.example.news.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,6 +28,7 @@ import butterknife.ButterKnife;
 import erik.com.example.news.R;
 import erik.com.example.news.adapters.NewsAdapter;
 import erik.com.example.news.api.models.Content;
+import erik.com.example.news.database.AppDataBase;
 import erik.com.example.news.database.entities.NewsDb;
 import erik.com.example.news.providers.NewsDataProvider;
 import erik.com.example.news.utils.Utils;
@@ -158,6 +160,11 @@ public class NewsDetailActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 try {
+                    if (checkNewsExistInDb(singleNews)) {
+                        Log.d("testTag", "checkNewsExistInDb: " );
+                    } else {
+                        Log.d("testTag", "checkNewsExistInDb: ---else---" );
+                    }
                     Utils.saveNewsInDB(singleNews, NewsDetailActivity.this);
                     Toast.makeText(NewsDetailActivity.this,
                             R.string.news_saved_message, Toast.LENGTH_SHORT).show();
@@ -178,11 +185,20 @@ public class NewsDetailActivity extends AppCompatActivity implements
                     pinNewsButton.setEnabled(false);
                     Toast.makeText(NewsDetailActivity.this,
                             R.string.news_pinned_message, Toast.LENGTH_SHORT).show();
+                    pinNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+
                 } else {
                     Toast.makeText(NewsDetailActivity.this, R.string.news_exists_message, Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private boolean checkNewsExistInDb(final Content singleNews) {
+        final AppDataBase appDataBase = AppDataBase.getAppDatabase(this);
+        final int newsId = appDataBase.newsDao().getNewsIdByTitle(singleNews.getWebTitle());
+        NewsDb currentNews = appDataBase.newsDao().loadNewsById(newsId);
+        return currentNews != null;
     }
 }
 
