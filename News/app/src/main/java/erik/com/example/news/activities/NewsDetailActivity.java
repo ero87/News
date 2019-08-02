@@ -171,7 +171,8 @@ public class NewsDetailActivity extends AppCompatActivity implements
                         Toast.makeText(NewsDetailActivity.this,
                                 R.string.news_saved_message, Toast.LENGTH_SHORT).show();
                         saveNewsButton.setEnabled(false);
-                        saveNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+                        saveNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources()
+                                .getColor(R.color.colorPrimaryDark)));
                     } catch (IOException e) {
                         Log.d("Failed To Save NewsDb", e.getLocalizedMessage());
                         Toast.makeText(NewsDetailActivity.this,
@@ -192,7 +193,8 @@ public class NewsDetailActivity extends AppCompatActivity implements
                     pinNewsButton.setEnabled(false);
                     Toast.makeText(NewsDetailActivity.this,
                             R.string.news_pinned_message, Toast.LENGTH_SHORT).show();
-                    pinNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+                    pinNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources()
+                            .getColor(R.color.colorPrimaryDark)));
                 } else {
                     Toast.makeText(NewsDetailActivity.this, R.string.news_exists_message, Toast.LENGTH_SHORT).show();
                 }
