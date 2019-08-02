@@ -188,7 +188,6 @@ public class NewsDetailActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 if (getSharedPreferencesKey.equals("fail")) {
-                    Log.d("testTag", "onClick: ");
                     sharedPreferences.edit().putString(PINNED_ITEM_URL_KEY + singleNews.getId(), singleNews.getApiUrl()).apply();
                     pinNewsButton.setEnabled(false);
                     Toast.makeText(NewsDetailActivity.this,
