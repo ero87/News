@@ -134,6 +134,12 @@ public class NewsDetailActivity extends AppCompatActivity implements
         newsWebContent.getSettings().setJavaScriptEnabled(true);
         newsWebContent.loadUrl(singleNews.getWebUrl());
         getSharedPreferencesKey = sharedPreferences.getString(PINNED_ITEM_URL_KEY + singleNews.getId(),"fail");
+        if (!getSharedPreferencesKey.equals("fail")) {
+            pinNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+        }
+        if (checkNewsExistInDb(singleNews)) {
+            saveNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+        }
         handleButtonsClick(singleNews);
     }
 
@@ -159,20 +165,21 @@ public class NewsDetailActivity extends AppCompatActivity implements
         saveNewsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    if (checkNewsExistInDb(singleNews)) {
-                        Log.d("testTag", "checkNewsExistInDb: " );
-                    } else {
-                        Log.d("testTag", "checkNewsExistInDb: ---else---" );
+                if (!checkNewsExistInDb(singleNews)) {
+                    try {
+                        Utils.saveNewsInDB(singleNews, NewsDetailActivity.this);
+                        Toast.makeText(NewsDetailActivity.this,
+                                R.string.news_saved_message, Toast.LENGTH_SHORT).show();
+                        saveNewsButton.setEnabled(false);
+                        saveNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
+                    } catch (IOException e) {
+                        Log.d("Failed To Save NewsDb", e.getLocalizedMessage());
+                        Toast.makeText(NewsDetailActivity.this,
+                                R.string.failed_to_save, Toast.LENGTH_SHORT).show();
                     }
-                    Utils.saveNewsInDB(singleNews, NewsDetailActivity.this);
+                } else {
                     Toast.makeText(NewsDetailActivity.this,
-                            R.string.news_saved_message, Toast.LENGTH_SHORT).show();
-                    saveNewsButton.setEnabled(false);
-                } catch (IOException e) {
-                    Log.d("Failed To Save NewsDb", e.getLocalizedMessage());
-                    Toast.makeText(NewsDetailActivity.this,
-                            R.string.failed_to_save, Toast.LENGTH_SHORT).show();
+                            R.string.news_pinned_message , Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -186,7 +193,6 @@ public class NewsDetailActivity extends AppCompatActivity implements
                     Toast.makeText(NewsDetailActivity.this,
                             R.string.news_pinned_message, Toast.LENGTH_SHORT).show();
                     pinNewsButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryDark)));
-
                 } else {
                     Toast.makeText(NewsDetailActivity.this, R.string.news_exists_message, Toast.LENGTH_SHORT).show();
                 }
